@@ -97,7 +97,7 @@ function Sidebar({ onClose }: { onClose: () => void }) {
       <div className="mb-6 flex items-center gap-3 px-2">
         <img src={logo.url} alt="SainoX logo" className="h-12 w-16 shrink-0 rounded-md object-cover" />
         <div className="flex-1">
-          <div className="text-sm font-bold tracking-wide">SainoX</div>
+          <div className="font-display text-base">SainoX</div>
           <div className="text-[11px] text-muted-foreground">Dashboard · Create with purpose</div>
         </div>
         <button className="lg:hidden" onClick={onClose} aria-label="Close menu"><X className="h-4 w-4" /></button>
