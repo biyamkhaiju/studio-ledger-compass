@@ -260,6 +260,42 @@ export type Database = {
         }
         Relationships: []
       }
+      workers: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string
+          id: string
+          name: string
+          photo_path: string | null
+          role: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          name: string
+          photo_path?: string | null
+          role?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          name?: string
+          photo_path?: string | null
+          role?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
