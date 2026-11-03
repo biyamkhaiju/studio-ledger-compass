@@ -62,32 +62,33 @@
 }
 
 :root {
+  /* Dark theme — SainoX logo: ink black, warm cream, ember red, saffron flame. */
   color-scheme: dark;
   --radius: 0.75rem;
-  --background: oklch(0.17 0.03 262);
-  --foreground: oklch(0.96 0.01 260);
-  --panel: oklch(0.2 0.035 262);
-  --card: oklch(0.215 0.035 262);
-  --card-foreground: oklch(0.96 0.01 260);
-  --popover: oklch(0.23 0.035 262);
-  --popover-foreground: oklch(0.96 0.01 260);
-  --primary: oklch(0.62 0.17 255);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.27 0.035 262);
-  --secondary-foreground: oklch(0.94 0.01 260);
-  --muted: oklch(0.26 0.03 262);
-  --muted-foreground: oklch(0.7 0.025 260);
-  --accent: oklch(0.28 0.04 262);
-  --accent-foreground: oklch(0.96 0.01 260);
+  --background: oklch(0.145 0.004 285);
+  --foreground: oklch(0.93 0.02 85);
+  --panel: oklch(0.175 0.006 285);
+  --card: oklch(0.18 0.006 285);
+  --card-foreground: oklch(0.93 0.02 85);
+  --popover: oklch(0.2 0.007 285);
+  --popover-foreground: oklch(0.93 0.02 85);
+  --primary: oklch(0.57 0.19 30);
+  --primary-foreground: oklch(0.97 0.015 85);
+  --secondary: oklch(0.23 0.008 285);
+  --secondary-foreground: oklch(0.91 0.02 85);
+  --muted: oklch(0.22 0.007 285);
+  --muted-foreground: oklch(0.7 0.02 80);
+  --accent: oklch(0.25 0.02 30);
+  --accent-foreground: oklch(0.95 0.02 85);
   --destructive: oklch(0.63 0.21 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.3 0.03 262);
-  --input: oklch(0.3 0.03 262);
-  --ring: oklch(0.62 0.17 255);
-  --wedding: oklch(0.7 0.17 5);
-  --website: oklch(0.65 0.16 250);
-  --ml: oklch(0.65 0.18 295);
-  --success: oklch(0.72 0.15 155);
+  --border: oklch(0.27 0.01 285);
+  --input: oklch(0.29 0.01 285);
+  --ring: oklch(0.6 0.18 35);
+  --wedding: oklch(0.68 0.17 12);
+  --website: oklch(0.78 0.14 75);
+  --ml: oklch(0.72 0.1 200);
+  --success: oklch(0.72 0.14 150);
   --warning: oklch(0.8 0.14 75);
   --danger: oklch(0.65 0.2 25);
   --chart-1: var(--wedding);
@@ -95,45 +96,48 @@
   --chart-3: var(--ml);
   --chart-4: var(--success);
   --chart-5: var(--warning);
-  --sidebar: oklch(0.155 0.03 262);
-  --sidebar-foreground: oklch(0.86 0.015 260);
-  --sidebar-primary: oklch(0.62 0.17 255);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.26 0.05 258);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(0.27 0.03 262);
-  --sidebar-ring: oklch(0.62 0.17 255);
+  --sidebar: oklch(0.12 0.004 285);
+  --sidebar-foreground: oklch(0.86 0.02 85);
+  --sidebar-primary: oklch(0.57 0.19 30);
+  --sidebar-primary-foreground: oklch(0.97 0.015 85);
+  --sidebar-accent: oklch(0.22 0.03 30);
+  --sidebar-accent-foreground: oklch(0.96 0.02 85);
+  --sidebar-border: oklch(0.23 0.008 285);
+  --sidebar-ring: oklch(0.6 0.18 35);
 }
 
 :root[data-theme="light"] {
+  /* Light theme — warm ivory paper with ink text and ember accents. */
   color-scheme: light;
-  --background: oklch(0.975 0.006 260);
-  --foreground: oklch(0.24 0.025 262);
-  --panel: oklch(0.955 0.009 260);
-  --card: oklch(1 0 0);
+  --background: oklch(0.975 0.01 85);
+  --foreground: oklch(0.2 0.006 285);
+  --panel: oklch(0.955 0.013 85);
+  --card: oklch(0.99 0.006 85);
   --card-foreground: var(--foreground);
-  --popover: oklch(1 0 0);
+  --popover: oklch(0.99 0.006 85);
   --popover-foreground: var(--foreground);
-  --primary: oklch(0.49 0.18 255);
-  --secondary: oklch(0.93 0.012 260);
+  --primary: oklch(0.5 0.19 28);
+  --primary-foreground: oklch(0.98 0.01 85);
+  --secondary: oklch(0.93 0.015 85);
   --secondary-foreground: var(--foreground);
-  --muted: oklch(0.94 0.009 260);
-  --muted-foreground: oklch(0.47 0.023 260);
-  --accent: oklch(0.92 0.022 255);
+  --muted: oklch(0.94 0.013 85);
+  --muted-foreground: oklch(0.46 0.02 60);
+  --accent: oklch(0.92 0.035 40);
   --accent-foreground: var(--foreground);
-  --border: oklch(0.86 0.014 260);
+  --border: oklch(0.87 0.018 80);
   --input: var(--border);
   --ring: var(--primary);
-  --wedding: oklch(0.49 0.18 5);
-  --website: oklch(0.47 0.17 250);
-  --ml: oklch(0.47 0.18 295);
-  --success: oklch(0.44 0.12 155);
-  --warning: oklch(0.46 0.1 75);
+  --wedding: oklch(0.5 0.18 12);
+  --website: oklch(0.52 0.12 65);
+  --ml: oklch(0.48 0.09 210);
+  --success: oklch(0.45 0.12 150);
+  --warning: oklch(0.5 0.11 70);
   --danger: oklch(0.5 0.2 25);
-  --sidebar: oklch(0.945 0.012 260);
+  --sidebar: oklch(0.945 0.016 85);
   --sidebar-foreground: var(--foreground);
   --sidebar-primary: var(--primary);
-  --sidebar-accent: oklch(0.9 0.027 255);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: oklch(0.9 0.04 40);
   --sidebar-accent-foreground: var(--foreground);
   --sidebar-border: var(--border);
   --sidebar-ring: var(--ring);
@@ -179,6 +183,11 @@
 
 @keyframes brand-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @utility animate-brand-rise { animation: brand-rise .7s cubic-bezier(.2,.8,.2,1) both; }
+
+@utility font-display {
+  font-family: var(--font-brand);
+  letter-spacing: 0.01em;
+}
 
 @utility panel {
   background-color: var(--color-card);

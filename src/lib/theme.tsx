@@ -1,7 +1,7 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { useContext, useEffect, useState, type ReactNode } from "react";
+import { ThemeContext } from "./contexts";
 import { parseTheme, THEME_KEY, type Theme } from "./theme-preference";
 
-const ThemeContext = createContext<{ theme: Theme; setTheme: (theme: Theme) => void } | null>(null);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("dark");

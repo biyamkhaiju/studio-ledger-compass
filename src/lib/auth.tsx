@@ -1,19 +1,19 @@
-import { createContext,useContext,useEffect,useState,type ReactNode } from "react";
+import { useContext,useEffect,useState,type ReactNode } from "react";
+import { AuthContext } from "./contexts";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { Tables } from "@/integrations/supabase/types";
 import logo from "@/assets/sainox-logo.png.asset.json";
-const Ctx=createContext<{session:Session|null;ready:boolean;profile:Tables<"profiles">|null;avatar:string;refresh:()=>Promise<void>}>({session:null,ready:false,profile:null,avatar:"",refresh:async()=>{}});
 export function AuthProvider({children}:{children:ReactNode}) {
  const [session,setSession]=useState<Session|null>(null),[ready,setReady]=useState(false),[profile,setProfile]=useState<Tables<"profiles">|null>(null),[avatar,setAvatar]=useState("");
  async function refresh(){const {data:{user}}=await supabase.auth.getUser(); if(!user){setProfile(null);setAvatar("");return;} const {data,error}=await supabase.from("profiles").select("*").eq("id",user.id).maybeSingle(); if(error)throw error; setProfile(data); if(data?.avatar_path){const result=await supabase.storage.from("avatars").createSignedUrl(data.avatar_path,3600);setAvatar(result.data?.signedUrl??"");}else setAvatar("");}
  useEffect(()=>{supabase.auth.getSession().then(({data})=>{setSession(data.session);setReady(true);});const {data:{subscription}}=supabase.auth.onAuthStateChange((event,next)=>{if(["SIGNED_IN","SIGNED_OUT","USER_UPDATED","PASSWORD_RECOVERY"].includes(event))setSession(next);});return()=>subscription.unsubscribe();},[]);
  useEffect(()=>{void refresh().catch(()=>setProfile(null));},[session?.user.id]);
- return <Ctx.Provider value={{session,ready,profile,avatar,refresh}}>{children}</Ctx.Provider>;
+ return <AuthContext.Provider value={{session,ready,profile,avatar,refresh}}>{children}</AuthContext.Provider>;
 }
-export const useAuth=()=>useContext(Ctx);
+export const useAuth=()=>useContext(AuthContext);
 
 type Mode="signin"|"signup"|"reset";
 export function SignInPanel(){

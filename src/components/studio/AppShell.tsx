@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { QuickCreateContext } from "@/lib/contexts";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Heart, Globe, BrainCircuit, FlaskConical, Users, Wallet, Image, CalendarDays, Settings,
@@ -47,8 +48,7 @@ const NAV: Group[] = [
   { label: "Settings", icon: Settings, to: "/settings" },
 ];
 
-const QCtx = createContext<(k: CreateKind) => void>(() => {});
-export const useQuickCreate = () => useContext(QCtx);
+export const useQuickCreate = () => useContext(QuickCreateContext);
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { session,ready }=useAuth();
@@ -62,7 +62,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   useEffect(() => setMobileOpen(false), [path]);
 
   return (
-    <QCtx.Provider value={setCreate}>
+    <QuickCreateContext.Provider value={setCreate}>
       <div className="flex min-h-screen w-full">
         <aside className={cn(
           "fixed inset-y-0 left-0 z-40 w-64 shrink-0 overflow-y-auto border-r border-sidebar-border bg-sidebar transition-transform lg:sticky lg:top-0 lg:h-screen lg:translate-x-0",
@@ -81,7 +81,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </div>
       <QuickCreateDialog kind={create} onClose={() => setCreate(null)} />
-    </QCtx.Provider>
+    </QuickCreateContext.Provider>
   );
 }
 
@@ -97,7 +97,7 @@ function Sidebar({ onClose }: { onClose: () => void }) {
       <div className="mb-6 flex items-center gap-3 px-2">
         <img src={logo.url} alt="SainoX logo" className="h-12 w-16 shrink-0 rounded-md object-cover" />
         <div className="flex-1">
-          <div className="text-sm font-bold tracking-wide">SainoX</div>
+          <div className="font-display text-base">SainoX</div>
           <div className="text-[11px] text-muted-foreground">Dashboard · Create with purpose</div>
         </div>
         <button className="lg:hidden" onClick={onClose} aria-label="Close menu"><X className="h-4 w-4" /></button>

@@ -2,7 +2,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { fetchLedger,saveLedger } from "./ledger.functions";
 import { ledgerSchema,emptyLedger,type LedgerData } from "./ledger-schema";
 import { useAuth } from "./auth";
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { StoreContext, type StoreValue } from "./contexts";
 
 export type Division = "wedding" | "website" | "ml";
 export type ProjectStatus = "planning" | "in_progress" | "in_review" | "completed" | "on_hold" | "cancelled";
@@ -80,11 +81,7 @@ export function rangeStart(r: RangeKey): string {
 export const npr = (n: number) => "NPR " + n.toLocaleString("en-IN");
 
 // ---------- database-backed store ----------
-interface Store {
- data: Data; set: (fn:(d:Data)=>Data)=>Promise<boolean>; log:(text:string)=>void;
- loading:boolean; saving:boolean; error:string; reload:()=>Promise<void>;
-}
-const Ctx=createContext<Store|null>(null);
+type Store = StoreValue;
 export function StoreProvider({children}:{children:ReactNode}) {
  const {session,ready}=useAuth();
  const fetchData=useServerFn(fetchLedger), saveData=useServerFn(saveLedger);
@@ -99,6 +96,6 @@ export function StoreProvider({children}:{children:ReactNode}) {
  const operation=queue.current.then(async()=>{if(!owner||identity.current!==owner){setError("Sign in to save records.");return false;}setSaving(true);try{const before=current.current,after=ledgerSchema.parse(fn(before));await saveData({data:{before,after}});if(identity.current!==owner)return false;current.current=after;setData(after);setError("");return true;}catch(e){setError(e instanceof Error?e.message:"Could not save records.");return false;}finally{setSaving(false);}});queue.current=operation;return operation;
  };
  const value:Store={data,set,log:text=>{void set(d=>({...d,activity:[{id:uid(),text,date:new Date().toISOString()},...d.activity]}));},loading,saving,error,reload};
- return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+ return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }
-export function useStore(){const store=useContext(Ctx);if(!store)throw new Error("useStore outside provider");return store;}
+export function useStore(){const store=useContext(StoreContext);if(!store)throw new Error("useStore outside provider");return store;}
