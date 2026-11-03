@@ -6,6 +6,14 @@
 
 @theme inline {
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-brand: "Marcellus", "Cormorant Garamond", Georgia, serif;
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-ink-raised: var(--brand-ink-raised);
+  --color-brand-line: var(--brand-line);
+  --color-brand-cream: var(--brand-cream);
+  --color-brand-ember: var(--brand-ember);
+  --color-brand-flame: var(--brand-flame);
+  --shadow-brand: var(--brand-shadow);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -140,6 +148,32 @@
     -webkit-font-smoothing: antialiased;
   }
 }
+
+/* SainoX brand palette (taken from the logo) — identical in light and dark mode. */
+:root, :root[data-theme="light"] {
+  --brand-ink: oklch(0.13 0.004 260);
+  --brand-ink-raised: oklch(0.17 0.006 260);
+  --brand-line: oklch(0.28 0.01 260);
+  --brand-cream: oklch(0.93 0.02 85);
+  --brand-ember: oklch(0.52 0.19 28);
+  --brand-flame: oklch(0.66 0.18 45);
+  --brand-shadow: 0 12px 32px -12px color-mix(in oklab, var(--brand-ember) 55%, transparent);
+}
+
+@utility brand-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--brand-ember), transparent);
+}
+
+@utility text-brand-gradient {
+  background: linear-gradient(135deg, var(--brand-ember), var(--brand-flame));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes brand-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@utility animate-brand-rise { animation: brand-rise .7s cubic-bezier(.2,.8,.2,1) both; }
 
 @utility panel {
   background-color: var(--color-card);
