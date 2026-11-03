@@ -172,6 +172,11 @@
   color: transparent;
 }
 
+@utility mask-soft-edges {
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at center, #000 60%, transparent 100%);
+  mask-image: radial-gradient(ellipse 70% 70% at center, #000 60%, transparent 100%);
+}
+
 @keyframes brand-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @utility animate-brand-rise { animation: brand-rise .7s cubic-bezier(.2,.8,.2,1) both; }
 

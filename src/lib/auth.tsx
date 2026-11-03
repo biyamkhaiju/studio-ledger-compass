@@ -42,8 +42,8 @@ export function SignInPanel(){
  return <div className="fixed inset-0 z-50 overflow-y-auto bg-brand-ink text-brand-cream">
   <div className="mx-auto flex min-h-full w-full max-w-md flex-col justify-center px-6 py-10">
    <h1 className="sr-only">SainoX Dashboard</h1>
-   <div className="animate-brand-rise overflow-hidden" aria-hidden="false">
-    <img src={logo.url} alt="sainoX" className="mx-auto aspect-[12/5] w-full max-w-sm object-cover object-[center_52%]"/>
+   <div className="animate-brand-rise overflow-hidden">
+    <img src={logo.url} alt="sainoX" className="mask-soft-edges mx-auto aspect-[12/5] w-full max-w-sm object-cover object-[center_52%]"/>
    </div>
    <p className="mt-1 text-center text-[11px] uppercase tracking-[0.35em] text-brand-cream/60 animate-brand-rise">Dashboard · Create with purpose</p>
    <div className="mt-8 rounded-2xl border border-brand-line bg-brand-ink-raised/60 p-6 shadow-brand animate-brand-rise sm:p-8" style={{animationDelay:"120ms"}}>
