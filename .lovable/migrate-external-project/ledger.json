@@ -1,0 +1,14 @@
+{
+  "source": "github: biyamkhaiju/khaiju-studio-team",
+  "capabilities": [
+    {"capability": "code", "source": "GitHub repo", "outcome": "migrate", "status": "verified", "next_action": "none"},
+    {"capability": "schema", "source": "external Supabase (partial migrations in repo)", "outcome": "migrate", "status": "verified", "next_action": "none; base tables reconstructed from generated types"},
+    {"capability": "records", "source": "external Supabase", "outcome": "migrate", "status": "pending", "next_action": "request CSV/JSON exports of clients, projects, payments, expenses, activity, invoices, invoice_items, project_workers, workers, profiles"},
+    {"capability": "auth identities", "source": "Supabase Auth", "outcome": "migrate", "status": "pending", "next_action": "request users export (id, email); map old IDs to new accounts on first verified sign-in"},
+    {"capability": "authorization", "source": "user_roles + has_role + RLS", "outcome": "migrate", "status": "implemented", "next_action": "first account becomes admin; verify with a real signed-in user"},
+    {"capability": "uploaded file bytes", "source": "avatars and worker-photos buckets", "outcome": "migrate", "status": "pending", "next_action": "buckets and policies created; file bytes need export from old storage"},
+    {"capability": "external providers, endpoints, webhooks, schedules", "source": "code inspection", "outcome": "none detected", "status": "verified", "next_action": "none"},
+    {"capability": "secrets", "source": ".env", "outcome": "old publishable keys replaced by Lovable Cloud", "status": "verified", "next_action": "none"},
+    {"capability": "verification", "source": "tests + preview", "outcome": "tests pass; build OK", "status": "in_progress", "next_action": "signed-in end-to-end run once an account exists"}
+  ]
+}
