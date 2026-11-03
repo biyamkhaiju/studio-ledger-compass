@@ -12,7 +12,8 @@ export function ledgerChanges(before:LedgerData,after:LedgerData):Json[] {
   for(const [field,value] of Object.entries(row)) {
    if(field==="createdAt")continue;
    const target=key==="activity"&&field==="date"?"created_at":snake[field]??field;
-   mapped[target]=(["clientId","projectId","invoiceId"].includes(field)&&value==="")?null:value as Json;
+   // Empty optional links and dates are stored as NULL; "" is not a valid uuid/date.
+   mapped[target]=(["clientId","projectId","invoiceId","deadline"].includes(field)&&value==="")?null:value as Json;
   }
   changes.push({table:tableMap[key],operation:"upsert",id:row.id,row:mapped});
  }

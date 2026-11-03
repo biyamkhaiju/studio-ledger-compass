@@ -46,7 +46,7 @@ function SettingsPage() {
       <section className="space-y-4 py-5">
         <div>
           <h2 className="font-semibold">Your data</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Your records are saved securely to your connected Supabase account.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Your records are saved securely to your private cloud account.</p>
           <p className="mt-2 text-sm text-muted-foreground">Import adds missing records only. Existing records are never overwritten.</p>
         </div>
         <div className="flex flex-wrap gap-2">
