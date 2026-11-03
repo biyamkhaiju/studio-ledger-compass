@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { Tables } from "@/integrations/supabase/types";
+import logo from "@/assets/sainox-logo.png.asset.json";
 const Ctx=createContext<{session:Session|null;ready:boolean;profile:Tables<"profiles">|null;avatar:string;refresh:()=>Promise<void>}>({session:null,ready:false,profile:null,avatar:"",refresh:async()=>{}});
 export function AuthProvider({children}:{children:ReactNode}) {
  const [session,setSession]=useState<Session|null>(null),[ready,setReady]=useState(false),[profile,setProfile]=useState<Tables<"profiles">|null>(null),[avatar,setAvatar]=useState("");
@@ -35,24 +36,34 @@ export function SignInPanel(){
   }catch(e){setError(e instanceof Error?e.message:"Something went wrong. Please retry.");}
   finally{setBusy(false);}
  }
- const title=mode==="signin"?"Sign in":mode==="signup"?"Create account":"Reset password";
+ const title=mode==="signin"?"Welcome back":mode==="signup"?"Create your account":"Reset your password";
  const action=mode==="signin"?"Sign in":mode==="signup"?"Create account":"Send reset link";
- return <div className="mx-auto max-w-md py-16">
-  <h1 className="text-3xl font-semibold">SainoX Dashboard</h1>
-  <h2 className="mt-8 text-xl">{title}</h2>
-  {mode==="reset"&&<p className="mt-2 text-sm text-muted-foreground">Enter your email and we'll send you a link to choose a new password.</p>}
-  <form className="mt-5 space-y-4" onSubmit={e=>{e.preventDefault();void submit();}}>
-   <Input aria-label="Email" type="email" placeholder="Email" autoComplete="email" required value={email} onChange={e=>setEmail(e.target.value)}/>
-   {mode!=="reset"&&<Input aria-label="Password" type="password" placeholder="Password" autoComplete={mode==="signup"?"new-password":"current-password"} required minLength={mode==="signup"?8:undefined} value={password} onChange={e=>setPassword(e.target.value)}/>}
-   {error&&<p role="alert" className="text-danger text-sm">{error}</p>}
-   {notice&&<p role="status" className="text-success text-sm">{notice}</p>}
-   <Button disabled={busy} className="w-full">{busy?"Please wait…":action}</Button>
-  </form>
-  <div className="mt-4 flex flex-wrap justify-between gap-2 text-sm">
-   {mode==="signin"?<>
-    <Button type="button" variant="link" className="px-0" onClick={()=>switchTo("signup")}>Create an account</Button>
-    <Button type="button" variant="link" className="px-0" onClick={()=>switchTo("reset")}>Forgot password?</Button>
-   </>:<Button type="button" variant="link" className="px-0" onClick={()=>switchTo("signin")}>Back to sign in</Button>}
+ const field="h-11 border-brand-line bg-brand-ink-raised text-brand-cream placeholder:text-brand-cream/40 focus-visible:ring-brand-ember";
+ return <div className="fixed inset-0 z-50 overflow-y-auto bg-brand-ink text-brand-cream">
+  <div className="mx-auto flex min-h-full w-full max-w-md flex-col justify-center px-6 py-10">
+   <h1 className="sr-only">SainoX Dashboard</h1>
+   <div className="animate-brand-rise overflow-hidden">
+    <img src={logo.url} alt="sainoX" className="mask-soft-edges mx-auto aspect-[12/5] w-full max-w-sm object-cover object-[center_52%]"/>
+   </div>
+   <p className="mt-1 text-center text-[11px] uppercase tracking-[0.35em] text-brand-cream/60 animate-brand-rise">Dashboard · Create with purpose</p>
+   <div className="mt-8 rounded-2xl border border-brand-line bg-brand-ink-raised/60 p-6 shadow-brand animate-brand-rise sm:p-8" style={{animationDelay:"120ms"}}>
+    <h2 className="font-brand text-2xl tracking-wide">{title}</h2>
+    <div className="brand-divider mt-3 w-24"/>
+    {mode==="reset"&&<p className="mt-3 text-sm text-brand-cream/60">Enter your email and we'll send you a link to choose a new password.</p>}
+    <form className="mt-6 space-y-4" onSubmit={e=>{e.preventDefault();void submit();}}>
+     <Input aria-label="Email" type="email" placeholder="Email" autoComplete="email" required value={email} onChange={e=>setEmail(e.target.value)} className={field}/>
+     {mode!=="reset"&&<Input aria-label="Password" type="password" placeholder="Password" autoComplete={mode==="signup"?"new-password":"current-password"} required minLength={mode==="signup"?8:undefined} value={password} onChange={e=>setPassword(e.target.value)} className={field}/>}
+     {error&&<p role="alert" className="text-sm text-brand-flame">{error}</p>}
+     {notice&&<p role="status" className="text-sm text-brand-cream/80">{notice}</p>}
+     <Button variant="brand" size="lg" disabled={busy} className="w-full">{busy?"Please wait…":action}</Button>
+    </form>
+    <div className="mt-5 flex flex-wrap justify-between gap-2 text-sm">
+     {mode==="signin"?<>
+      <Button type="button" variant="brand-link" className="h-auto px-0" onClick={()=>switchTo("signup")}>Create an account</Button>
+      <Button type="button" variant="brand-link" className="h-auto px-0" onClick={()=>switchTo("reset")}>Forgot password?</Button>
+     </>:<Button type="button" variant="brand-link" className="h-auto px-0" onClick={()=>switchTo("signin")}>Back to sign in</Button>}
+    </div>
+   </div>
   </div>
  </div>;
 }
