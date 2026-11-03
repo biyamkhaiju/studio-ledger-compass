@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { QuickCreateContext } from "@/lib/contexts";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Heart, Globe, BrainCircuit, FlaskConical, Users, Wallet, Image, CalendarDays, Settings,
@@ -47,8 +48,7 @@ const NAV: Group[] = [
   { label: "Settings", icon: Settings, to: "/settings" },
 ];
 
-const QCtx = createContext<(k: CreateKind) => void>(() => {});
-export const useQuickCreate = () => useContext(QCtx);
+export const useQuickCreate = () => useContext(QuickCreateContext);
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { session,ready }=useAuth();
@@ -62,7 +62,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   useEffect(() => setMobileOpen(false), [path]);
 
   return (
-    <QCtx.Provider value={setCreate}>
+    <QuickCreateContext.Provider value={setCreate}>
       <div className="flex min-h-screen w-full">
         <aside className={cn(
           "fixed inset-y-0 left-0 z-40 w-64 shrink-0 overflow-y-auto border-r border-sidebar-border bg-sidebar transition-transform lg:sticky lg:top-0 lg:h-screen lg:translate-x-0",
@@ -81,7 +81,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </div>
       <QuickCreateDialog kind={create} onClose={() => setCreate(null)} />
-    </QCtx.Provider>
+    </QuickCreateContext.Provider>
   );
 }
 
