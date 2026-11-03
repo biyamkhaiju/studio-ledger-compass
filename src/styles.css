@@ -151,7 +151,7 @@
 
 /* SainoX brand palette (taken from the logo) — identical in light and dark mode. */
 :root, :root[data-theme="light"] {
-  --brand-ink: oklch(0.13 0.004 260);
+  --brand-ink: oklch(0.138 0.004 285);
   --brand-ink-raised: oklch(0.17 0.006 260);
   --brand-line: oklch(0.28 0.01 260);
   --brand-cream: oklch(0.93 0.02 85);
