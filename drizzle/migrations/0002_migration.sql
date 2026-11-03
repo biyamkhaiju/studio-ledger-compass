@@ -1,0 +1,50 @@
+CREATE TABLE public.invoices (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), user_id uuid NOT NULL, project_id uuid REFERENCES public.projects(id) ON DELETE SET NULL, client_id uuid REFERENCES public.clients(id) ON DELETE SET NULL, number text NOT NULL, client_name text NOT NULL DEFAULT '', client_email text NOT NULL DEFAULT '', issue_date date NOT NULL DEFAULT CURRENT_DATE, due_date date NOT NULL, notes text NOT NULL DEFAULT '', created_at timestamptz NOT NULL DEFAULT now(), updated_at timestamptz NOT NULL DEFAULT now(), UNIQUE(user_id,number));
+GRANT SELECT,INSERT,UPDATE,DELETE ON public.invoices TO authenticated; GRANT ALL ON public.invoices TO service_role;
+ALTER TABLE public.invoices ENABLE ROW LEVEL SECURITY;
+CREATE POLICY invoice_owner ON public.invoices FOR ALL TO authenticated USING(user_id=auth.uid()) WITH CHECK(user_id=auth.uid());
+CREATE TRIGGER update_invoices BEFORE UPDATE ON public.invoices FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+CREATE TABLE public.invoice_items (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), invoice_id uuid NOT NULL REFERENCES public.invoices(id) ON DELETE CASCADE, description text NOT NULL, quantity numeric NOT NULL DEFAULT 1, rate numeric NOT NULL DEFAULT 0, created_at timestamptz NOT NULL DEFAULT now(), updated_at timestamptz NOT NULL DEFAULT now());
+GRANT SELECT,INSERT,UPDATE,DELETE ON public.invoice_items TO authenticated; GRANT ALL ON public.invoice_items TO service_role;
+ALTER TABLE public.invoice_items ENABLE ROW LEVEL SECURITY;
+CREATE POLICY item_owner ON public.invoice_items FOR ALL TO authenticated USING(EXISTS(SELECT 1 FROM public.invoices i WHERE i.id=invoice_id AND i.user_id=auth.uid())) WITH CHECK(EXISTS(SELECT 1 FROM public.invoices i WHERE i.id=invoice_id AND i.user_id=auth.uid()));
+CREATE TRIGGER update_invoice_items BEFORE UPDATE ON public.invoice_items FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+ALTER TABLE public.payments ADD COLUMN invoice_id uuid REFERENCES public.invoices(id) ON DELETE SET NULL;
+CREATE TABLE public.project_workers (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), user_id uuid NOT NULL, project_id uuid NOT NULL REFERENCES public.projects(id) ON DELETE CASCADE, worker_id uuid NOT NULL REFERENCES public.workers(id) ON DELETE CASCADE, created_at timestamptz NOT NULL DEFAULT now(), updated_at timestamptz NOT NULL DEFAULT now(), UNIQUE(project_id,worker_id));
+GRANT SELECT,INSERT,UPDATE,DELETE ON public.project_workers TO authenticated; GRANT ALL ON public.project_workers TO service_role;
+ALTER TABLE public.project_workers ENABLE ROW LEVEL SECURITY;
+CREATE POLICY assignment_owner ON public.project_workers FOR ALL TO authenticated USING(user_id=auth.uid()) WITH CHECK(user_id=auth.uid() AND EXISTS(SELECT 1 FROM public.projects p WHERE p.id=project_id AND p.user_id=auth.uid()) AND public.has_role(auth.uid(),'admin'));
+CREATE TRIGGER update_project_workers BEFORE UPDATE ON public.project_workers FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+CREATE OR REPLACE FUNCTION public.validate_worker() RETURNS trigger LANGUAGE plpgsql SET search_path=public AS $$ BEGIN IF NEW.status NOT IN ('available','working','unavailable','on_leave') THEN RAISE EXCEPTION 'Invalid worker status'; END IF; IF length(trim(NEW.name))=0 OR length(NEW.name)>100 THEN RAISE EXCEPTION 'Name is required (max 100 chars)'; END IF; IF length(NEW.role)>100 OR length(NEW.description)>500 THEN RAISE EXCEPTION 'Text too long'; END IF; RETURN NEW; END $$;
+CREATE OR REPLACE FUNCTION public.validate_ledger_relations() RETURNS trigger LANGUAGE plpgsql SET search_path=public AS $$ BEGIN
+IF TG_TABLE_NAME='project_workers' THEN IF EXISTS(SELECT 1 FROM public.workers WHERE id=NEW.worker_id AND status IN ('unavailable','on_leave')) THEN RAISE EXCEPTION 'Worker is unavailable for new assignments'; END IF;
+ELSIF TG_TABLE_NAME='invoice_items' THEN IF NEW.quantity<=0 OR NEW.rate<0 THEN RAISE EXCEPTION 'Invalid invoice quantity or rate'; END IF;
+ELSE
+IF NEW.user_id IS DISTINCT FROM auth.uid() AND current_user NOT IN ('postgres','service_role') THEN RAISE EXCEPTION 'Invalid owner'; END IF;
+IF TG_TABLE_NAME='projects' THEN IF NEW.budget<0 OR NEW.manual_progress<0 OR NEW.manual_progress>100 OR length(trim(NEW.name))=0 THEN RAISE EXCEPTION 'Invalid project'; END IF; IF NEW.client_id IS NOT NULL AND NOT EXISTS(SELECT 1 FROM public.clients WHERE id=NEW.client_id AND user_id=NEW.user_id) THEN RAISE EXCEPTION 'Invalid client owner'; END IF;
+ELSE
+IF NEW.project_id IS NOT NULL AND NOT EXISTS(SELECT 1 FROM public.projects WHERE id=NEW.project_id AND user_id=NEW.user_id) THEN RAISE EXCEPTION 'Invalid project owner'; END IF;
+IF TG_TABLE_NAME='invoices' THEN IF NEW.client_id IS NOT NULL AND NOT EXISTS(SELECT 1 FROM public.clients WHERE id=NEW.client_id AND user_id=NEW.user_id) THEN RAISE EXCEPTION 'Invalid client owner'; END IF;
+ELSE IF NEW.amount<=0 THEN RAISE EXCEPTION 'Amount must be positive'; END IF; IF TG_TABLE_NAME='payments' AND NEW.invoice_id IS NOT NULL AND NOT EXISTS(SELECT 1 FROM public.invoices WHERE id=NEW.invoice_id AND user_id=NEW.user_id AND project_id IS NOT DISTINCT FROM NEW.project_id) THEN RAISE EXCEPTION 'Invalid invoice owner or project'; END IF; END IF;
+END IF; END IF; RETURN NEW; END $$;
+CREATE TRIGGER validate_project_relations BEFORE INSERT OR UPDATE ON public.projects FOR EACH ROW EXECUTE FUNCTION public.validate_ledger_relations();
+CREATE TRIGGER validate_payment_relations BEFORE INSERT OR UPDATE ON public.payments FOR EACH ROW EXECUTE FUNCTION public.validate_ledger_relations();
+CREATE TRIGGER validate_expense_relations BEFORE INSERT OR UPDATE ON public.expenses FOR EACH ROW EXECUTE FUNCTION public.validate_ledger_relations();
+CREATE TRIGGER validate_invoice_relations BEFORE INSERT OR UPDATE ON public.invoices FOR EACH ROW EXECUTE FUNCTION public.validate_ledger_relations();
+CREATE TRIGGER validate_item_values BEFORE INSERT OR UPDATE ON public.invoice_items FOR EACH ROW EXECUTE FUNCTION public.validate_ledger_relations();
+CREATE TRIGGER validate_assignment BEFORE INSERT OR UPDATE ON public.project_workers FOR EACH ROW EXECUTE FUNCTION public.validate_ledger_relations();
+CREATE INDEX invoices_owner ON public.invoices(user_id); CREATE INDEX invoice_items_invoice ON public.invoice_items(invoice_id); CREATE INDEX project_workers_owner ON public.project_workers(user_id);
+GRANT SELECT,INSERT,UPDATE,DELETE ON public.clients,public.projects,public.payments,public.expenses,public.activity TO authenticated;
+GRANT SELECT,INSERT,UPDATE ON public.profiles TO authenticated;
+GRANT SELECT ON public.workers TO anon,authenticated;
+GRANT INSERT,UPDATE,DELETE ON public.workers TO authenticated;
+GRANT SELECT ON public.user_roles TO authenticated;
+CREATE OR REPLACE FUNCTION public.apply_ledger_changes(changes jsonb) RETURNS void LANGUAGE plpgsql SECURITY INVOKER SET search_path=public AS $$ DECLARE c jsonb; t text; rid uuid; rowdata jsonb; cols text; vals text; updates text; BEGIN
+IF auth.uid() IS NULL THEN RAISE EXCEPTION 'Sign in required'; END IF;
+FOR c IN SELECT value FROM jsonb_array_elements(changes) LOOP t:=c->>'table'; IF t NOT IN ('clients','projects','payments','expenses','activity','invoices','invoice_items','project_workers') THEN RAISE EXCEPTION 'Invalid entity'; END IF;
+rid:=(c->>'id')::uuid;
+IF c->>'operation'='delete' THEN EXECUTE format('DELETE FROM public.%I WHERE id=$1',t) USING rid;
+ELSE rowdata:=c->'row'; rowdata:=rowdata - 'created_at' - 'updated_at'; IF t<>'invoice_items' THEN rowdata:=rowdata || jsonb_build_object('user_id',auth.uid()); END IF;
+SELECT string_agg(format('%I',key),','),string_agg(format('r.%I',key),','),string_agg(format('%I=EXCLUDED.%I',key,key),',') INTO cols,vals,updates FROM jsonb_object_keys(rowdata) key WHERE key<>'id';
+EXECUTE format('INSERT INTO public.%I (id,%s) SELECT r.id,%s FROM jsonb_populate_record(NULL::public.%I,$1) r ON CONFLICT(id) DO UPDATE SET %s',t,cols,vals,t,updates) USING rowdata;
+END IF; END LOOP; END $$;
+REVOKE ALL ON FUNCTION public.apply_ledger_changes(jsonb) FROM PUBLIC,anon; GRANT EXECUTE ON FUNCTION public.apply_ledger_changes(jsonb) TO authenticated;

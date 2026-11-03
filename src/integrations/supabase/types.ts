@@ -115,12 +115,111 @@ export type Database = {
           },
         ]
       }
+      invoice_items: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          invoice_id: string
+          quantity: number
+          rate: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          invoice_id: string
+          quantity?: number
+          rate?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          invoice_id?: string
+          quantity?: number
+          rate?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          client_email: string
+          client_id: string | null
+          client_name: string
+          created_at: string
+          due_date: string
+          id: string
+          issue_date: string
+          notes: string
+          number: string
+          project_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          client_email?: string
+          client_id?: string | null
+          client_name?: string
+          created_at?: string
+          due_date: string
+          id?: string
+          issue_date?: string
+          notes?: string
+          number: string
+          project_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          client_email?: string
+          client_id?: string | null
+          client_name?: string
+          created_at?: string
+          due_date?: string
+          id?: string
+          issue_date?: string
+          notes?: string
+          number?: string
+          project_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payments: {
         Row: {
           amount: number
           created_at: string
           date: string
           id: string
+          invoice_id: string | null
           note: string
           project_id: string | null
           updated_at: string
@@ -131,6 +230,7 @@ export type Database = {
           created_at?: string
           date?: string
           id?: string
+          invoice_id?: string | null
           note?: string
           project_id?: string | null
           updated_at?: string
@@ -141,12 +241,20 @@ export type Database = {
           created_at?: string
           date?: string
           id?: string
+          invoice_id?: string | null
           note?: string
           project_id?: string | null
           updated_at?: string
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "payments_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "payments_project_id_fkey"
             columns: ["project_id"]
@@ -182,6 +290,48 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      project_workers: {
+        Row: {
+          created_at: string
+          id: string
+          project_id: string
+          updated_at: string
+          user_id: string
+          worker_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          project_id: string
+          updated_at?: string
+          user_id: string
+          worker_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          project_id?: string
+          updated_at?: string
+          user_id?: string
+          worker_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_workers_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_workers_worker_id_fkey"
+            columns: ["worker_id"]
+            isOneToOne: false
+            referencedRelation: "workers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       projects: {
         Row: {
@@ -301,6 +451,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apply_ledger_changes: { Args: { changes: Json }; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
