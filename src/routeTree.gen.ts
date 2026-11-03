@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ClientsRouteImport } from './routes/clients'
 import { Route as FinanceRouteImport } from './routes/finance'
 import { Route as InvoicesRouteImport } from './routes/invoices'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
@@ -37,6 +38,11 @@ const FinanceRoute = FinanceRouteImport.update({
 const InvoicesRoute = InvoicesRouteImport.update({
   id: '/invoices',
   path: '/invoices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/clients': typeof ClientsRoute
   '/finance': typeof FinanceRoute
   '/invoices': typeof InvoicesRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
   '/team': typeof TeamRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
   '/clients': typeof ClientsRoute
   '/finance': typeof FinanceRoute
   '/invoices': typeof InvoicesRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
   '/team': typeof TeamRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   '/clients': typeof ClientsRoute
   '/finance': typeof FinanceRoute
   '/invoices': typeof InvoicesRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
   '/team': typeof TeamRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
     | '/clients'
     | '/finance'
     | '/invoices'
+    | '/reset-password'
     | '/settings'
     | '/team'
     | '/projects/$projectId'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/clients'
     | '/finance'
     | '/invoices'
+    | '/reset-password'
     | '/settings'
     | '/team'
     | '/projects/$projectId'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/clients'
     | '/finance'
     | '/invoices'
+    | '/reset-password'
     | '/settings'
     | '/team'
     | '/projects/$projectId'
@@ -140,6 +152,7 @@ export interface RootRouteChildren {
   ClientsRoute: typeof ClientsRoute
   FinanceRoute: typeof FinanceRoute
   InvoicesRoute: typeof InvoicesRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SettingsRoute: typeof SettingsRoute
   TeamRoute: typeof TeamRoute
   ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
@@ -175,6 +188,13 @@ declare module '@tanstack/react-router' {
       path: '/invoices'
       fullPath: '/invoices'
       preLoaderRoute: typeof InvoicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -220,6 +240,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClientsRoute: ClientsRoute,
   FinanceRoute: FinanceRoute,
   InvoicesRoute: InvoicesRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SettingsRoute: SettingsRoute,
   TeamRoute: TeamRoute,
   ProjectsProjectIdRoute: ProjectsProjectIdRoute,

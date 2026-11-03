@@ -56,6 +56,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [create, setCreate] = useState<CreateKind | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const path = useRouterState({ select: (s) => s.location.href });
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  // Pages anyone can open without signing in.
+  const isPublic = pathname === "/team" || pathname === "/reset-password";
   useEffect(() => setMobileOpen(false), [path]);
 
   return (
@@ -73,7 +76,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <main className="flex-1 px-4 py-6 md:px-8">
             {saving&&<p role="status" className="mb-3 text-xs text-muted-foreground">Saving changes…</p>}
             {error&&<div role="alert" className="mb-5 flex flex-wrap items-center gap-3 border-l-2 border-danger bg-danger/10 p-4 text-sm text-danger"><span>{error}</span><Button variant="secondary" size="sm" onClick={()=>void reload()}>Retry</Button></div>}
-            {!ready?<p className="py-10 text-muted-foreground">Loading account…</p>:!session&&path!=="/team"?<SignInPanel/>:session&&loading?<p className="py-10 text-muted-foreground">Loading your records…</p>:children}
+            {!ready?<p className="py-10 text-muted-foreground">Loading account…</p>:!session&&!isPublic?<SignInPanel/>:session&&loading&&!isPublic?<p className="py-10 text-muted-foreground">Loading your records…</p>:children}
           </main>
         </div>
       </div>
