@@ -65,7 +65,7 @@ function Dashboard() {
     <div className="mx-auto max-w-[1400px] space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">SainoX Dashboard</h1>
+          <h1 className="font-display text-3xl md:text-4xl">SainoX Dashboard</h1>
           <p className="mt-1 text-sm text-muted-foreground">{greeting()}{profile?.display_name ? `, ${profile.display_name}` : ""}. Every project. Every possibility.</p>
         </div>
         <div className="flex items-center gap-3">
