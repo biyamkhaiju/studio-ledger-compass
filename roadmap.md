@@ -1,13 +1,7 @@
 # SainoX Dashboard
 
-- [ ] Apply SainoX name and uploaded logo throughout the dashboard.
-- [ ] Fix project creation and current application errors.
-
-- [x] Inspect existing persistence, invoice implementation, and connection configuration.
-- [x] Inspect connected external Supabase schema, access rules, private storage, and existing app.
-- [ ] Complete real database CRUD, explicit local import, and safe backups.
-- [ ] Add persisted invoices, items, payments, and worker assignments.
-- [ ] Complete profile avatar uploads and profile preferences.
-- [ ] Finish worker availability, summaries, sorting, and assignments.
-- [ ] Refine existing design and consistent light/dark themes.
-- [ ] Run rules tests and verify real authenticated flows where access permits.
+- [x] Import the GitHub project and fix every build/runtime error.
+- [x] Recreate the full database (projects, clients, payments, expenses, invoices, team, profiles, roles) and private photo storage in Lovable Cloud.
+- [x] Add create-account and forgot-password flows so people can actually get in.
+- [x] Fix saving a project with an empty deadline.
+- [ ] Import existing records and users from the old database — waiting on the user's exports.
