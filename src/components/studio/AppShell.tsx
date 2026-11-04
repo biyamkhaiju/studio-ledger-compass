@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { QuickCreateContext } from "@/lib/contexts";
+import { QuickCreateContext, type QuickCreateOptions } from "@/lib/contexts";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Heart, Globe, BrainCircuit, FlaskConical, Users, Wallet, Image, CalendarDays, Settings,
@@ -14,6 +14,7 @@ import { useTheme } from "@/lib/theme";
 import { useAuth, SignInPanel } from "@/lib/auth";
 import logo from "@/assets/sainox-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
+import { CATEGORY_INFO, INVITATION_CATEGORIES } from "@/lib/invitations";
 
 type Item = { label: string; to: string; search?: Record<string, string> };
 type Group = { label: string; icon: typeof Heart; to?: string; items?: Item[] };
@@ -21,9 +22,10 @@ type Group = { label: string; icon: typeof Heart; to?: string; items?: Item[] };
 const soon = (m: string): Item["to"] => `/soon/${m}`;
 const NAV: Group[] = [
   { label: "Dashboard", icon: LayoutDashboard, to: "/" },
-  { label: "Wedding Invitations", icon: Heart, items: [
-    { label: "All Projects", to: "/projects", search: { division: "wedding" } },
-    { label: "Templates", to: soon("templates") }, { label: "Orders", to: soon("orders") },
+  { label: "Invitation Projects", icon: Heart, items: [
+    { label: "All Invitations", to: "/invitations" },
+    ...INVITATION_CATEGORIES.map((c) => ({ label: CATEGORY_INFO[c].label, to: `/invitations/${CATEGORY_INFO[c].path}` })),
+    { label: "Templates", to: soon("templates") },
   ]},
   { label: "Websites & Business", icon: Globe, items: [
     { label: "All Projects", to: "/projects", search: { division: "website" } },
@@ -53,13 +55,16 @@ export const useQuickCreate = () => useContext(QuickCreateContext);
 export function AppShell({ children }: { children: ReactNode }) {
   const { session,ready }=useAuth();
   const {loading,error,saving,reload}=useStore();
-  const [create, setCreate] = useState<CreateKind | null>(null);
+  const [create, setCreateState] = useState<{ kind: CreateKind; preset?: QuickCreateOptions } | null>(null);
+  const setCreate = (kind: CreateKind, preset?: QuickCreateOptions) => setCreateState({ kind, ...(preset ? { preset } : {}) });
   const [mobileOpen, setMobileOpen] = useState(false);
   const path = useRouterState({ select: (s) => s.location.href });
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   // Pages anyone can open without signing in.
   const isPublic = pathname === "/team" || pathname === "/reset-password";
   useEffect(() => setMobileOpen(false), [path]);
+  // Guest invitation pages are public cards, shown without the dashboard frame.
+  if (pathname.startsWith("/invite/")) return <>{children}</>;
 
   return (
     <QuickCreateContext.Provider value={setCreate}>
@@ -72,7 +77,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </aside>
         {mobileOpen && <div className="fixed inset-0 z-30 bg-background/70 lg:hidden" onClick={() => setMobileOpen(false)} />}
         <div className="flex min-w-0 flex-1 flex-col">
-          <TopBar onMenu={() => setMobileOpen(true)} onCreate={setCreate} />
+          <TopBar onMenu={() => setMobileOpen(true)} onCreate={(k) => setCreate(k)} />
           <main className="flex-1 px-4 py-6 md:px-8">
             {saving&&<p role="status" className="mb-3 text-xs text-muted-foreground">Saving changes…</p>}
             {error&&<div role="alert" className="mb-5 flex flex-wrap items-center gap-3 border-l-2 border-danger bg-danger/10 p-4 text-sm text-danger"><span>{error}</span><Button variant="secondary" size="sm" onClick={()=>void reload()}>Retry</Button></div>}
@@ -80,7 +85,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </main>
         </div>
       </div>
-      <QuickCreateDialog kind={create} onClose={() => setCreate(null)} />
+      <QuickCreateDialog kind={create?.kind ?? null} {...(create?.preset ? { preset: create.preset } : {})} onClose={() => setCreateState(null)} />
     </QuickCreateContext.Provider>
   );
 }
@@ -89,7 +94,7 @@ function Sidebar({ onClose }: { onClose: () => void }) {
   const loc = useRouterState({ select: (s) => s.location });
   const division = (loc.search as Record<string, string>)["division"];
   const isActive = (it: { to?: string; search?: Record<string, string> }) =>
-    it.to === "/" ? loc.pathname === "/" : !!it.to && loc.pathname === it.to && (!it.search || it.search["division"] === division);
+    it.to === "/" ? loc.pathname === "/" : !!it.to && loc.pathname.replace(/\/$/, "") === it.to && (!it.search || it.search["division"] === division);
   const [open, setOpen] = useState<Record<string, boolean>>({});
 
   return (
@@ -207,7 +212,7 @@ function TopBar({ onMenu, onCreate }: { onMenu: () => void; onCreate: (k: Create
         <DropdownMenu>
           <DropdownMenuTrigger asChild><Button size="sm"><Plus className="h-4 w-4" /> <span className="hidden sm:inline">Create</span></Button></DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onSelect={() => onCreate("wedding")}>Wedding project</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => onCreate("wedding")}>Invitation project</DropdownMenuItem>
             <DropdownMenuItem onSelect={() => onCreate("website")}>Website project</DropdownMenuItem>
             <DropdownMenuItem onSelect={() => onCreate("ml")}>ML/DL project</DropdownMenuItem>
             <DropdownMenuItem onSelect={() => onCreate("client")}>Client</DropdownMenuItem>
