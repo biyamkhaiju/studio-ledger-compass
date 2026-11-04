@@ -9,6 +9,7 @@ import type { Session } from "@supabase/supabase-js";
 import type { Tables } from "@/integrations/supabase/types";
 import type { LedgerData } from "./ledger-schema";
 import type { Theme } from "./theme-preference";
+import type { InvitationCategory } from "./invitations";
 
 export interface StoreValue {
   data: LedgerData;
@@ -33,4 +34,6 @@ export const AuthContext = createContext<AuthValue>({ session: null, ready: fals
 export const ThemeContext = createContext<{ theme: Theme; setTheme: (theme: Theme) => void } | null>(null);
 
 export type QuickCreateKind = "wedding" | "website" | "ml" | "client" | "payment" | "expense";
-export const QuickCreateContext = createContext<(k: QuickCreateKind) => void>(() => {});
+/** Optional presets: invitation category for new invitation projects, project for payments/expenses. */
+export type QuickCreateOptions = { category?: InvitationCategory; projectId?: string };
+export const QuickCreateContext = createContext<(k: QuickCreateKind, options?: QuickCreateOptions) => void>(() => {});
