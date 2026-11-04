@@ -4,6 +4,7 @@ import { ledgerSchema,emptyLedger,type LedgerData } from "./ledger-schema";
 import { useAuth } from "./auth";
 import { useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { StoreContext, type StoreValue } from "./contexts";
+import type { InvitationCategory } from "./invitations";
 
 export type Division = "wedding" | "website" | "ml";
 export type ProjectStatus = "planning" | "in_progress" | "in_review" | "completed" | "on_hold" | "cancelled";
@@ -30,6 +31,12 @@ export interface Project {
   description: string;
   milestones: Milestone[];
   manualProgress: number;
+  invitationCategory: InvitationCategory | null;
+  eventDate: string;
+  eventTime: string;
+  eventVenue: string;
+  hosts: string;
+  invitationMessage: string;
 }
 export interface Payment { id: string; projectId: string; invoiceId?: string | null; amount: number; date: string; note: string }
 export interface Expense { id: string; projectId: string | null; category: string; amount: number; date: string; note: string }
@@ -38,7 +45,7 @@ export interface Activity { id: string; text: string; date: string }
 export type Data = LedgerData;
 
 export const DIVISIONS: Record<Division, { label: string; short: string }> = {
-  wedding: { label: "Wedding Invitations", short: "Wedding" },
+  wedding: { label: "Invitation Projects", short: "Invitation" },
   website: { label: "Websites & Business", short: "Website" },
   ml: { label: "ML / DL Projects", short: "ML/DL" },
 };

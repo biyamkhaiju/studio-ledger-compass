@@ -1,10 +1,13 @@
 import { z } from "zod";
+import { INVITATION_CATEGORIES } from "./invitations";
 
 const id = z.string().min(1).max(100);
 const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const money = z.number().finite().nonnegative();
 export const clientSchema = z.object({ id, name: z.string().trim().min(1).max(200), kind: z.enum(["wedding", "business", "internal"]), email: z.string().max(254), phone: z.string().max(100), location: z.string().max(300), createdAt: z.string() });
-export const projectSchema = z.object({ id, name: z.string().trim().min(1).max(200), division: z.enum(["wedding", "website", "ml"]), clientId: z.string(), status: z.enum(["planning", "in_progress", "in_review", "completed", "on_hold", "cancelled"]), budget: money, startDate: date, deadline: z.union([date,z.literal("")]), description: z.string().max(10000), milestones: z.array(z.object({id,title:z.string().min(1),done:z.boolean()})), manualProgress: z.number().int().min(0).max(100) });
+export const projectSchema = z.object({ id, name: z.string().trim().min(1).max(200), division: z.enum(["wedding", "website", "ml"]), clientId: z.string(), status: z.enum(["planning", "in_progress", "in_review", "completed", "on_hold", "cancelled"]), budget: money, startDate: date, deadline: z.union([date,z.literal("")]), description: z.string().max(10000), milestones: z.array(z.object({id,title:z.string().min(1),done:z.boolean()})), manualProgress: z.number().int().min(0).max(100),
+ // Invitation details (only used by invitation projects; older backups default to empty).
+ invitationCategory: z.enum(INVITATION_CATEGORIES).nullable().default(null), eventDate: z.union([date,z.literal("")]).default(""), eventTime: z.string().max(100).default(""), eventVenue: z.string().max(500).default(""), hosts: z.string().max(500).default(""), invitationMessage: z.string().max(5000).default("") });
 export const paymentSchema = z.object({id,projectId:z.string(),invoiceId:z.string().nullable().optional(),amount:money.positive(),date,note:z.string().max(10000)});
 export const expenseSchema = z.object({id,projectId:z.string().nullable(),category:z.string().min(1),amount:money.positive(),date,note:z.string().max(10000)});
 export const invoiceSchema = z.object({id,projectId:z.string().nullable(),clientId:z.string().nullable(),number:z.string().trim().min(1).max(100),clientName:z.string().min(1),clientEmail:z.string(),issueDate:date,dueDate:date,notes:z.string()});
