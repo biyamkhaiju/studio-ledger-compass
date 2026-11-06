@@ -115,6 +115,48 @@ export type Database = {
           },
         ]
       }
+      inquiries: {
+        Row: {
+          created_at: string
+          email: string
+          event_date: string | null
+          id: string
+          message: string
+          name: string
+          notes: string
+          occasion: string
+          phone: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string
+          event_date?: string | null
+          id?: string
+          message?: string
+          name: string
+          notes?: string
+          occasion?: string
+          phone?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          event_date?: string | null
+          id?: string
+          message?: string
+          name?: string
+          notes?: string
+          occasion?: string
+          phone?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       invitation_guests: {
         Row: {
           created_at: string
