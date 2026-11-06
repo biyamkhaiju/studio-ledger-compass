@@ -12,13 +12,23 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ClientsRouteImport } from './routes/clients'
 import { Route as FinanceRouteImport } from './routes/finance'
+import { Route as InquiriesRouteImport } from './routes/inquiries'
 import { Route as InvoicesRouteImport } from './routes/invoices'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SiteRouteImport } from './routes/site'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects.$projectId'
+import { Route as SiteIndexRouteImport } from './routes/site.index'
+import { Route as SiteAboutRouteImport } from './routes/site.about'
+import { Route as SiteContactRouteImport } from './routes/site.contact'
+import { Route as SiteOurTeamRouteImport } from './routes/site.our-team'
+import { Route as SitePortfolioRouteImport } from './routes/site.portfolio'
+import { Route as SiteServicesRouteImport } from './routes/site.services'
+import { Route as SiteWhySainoxRouteImport } from './routes/site.why-sainox'
 import { Route as SoonModuleRouteImport } from './routes/soon.$module'
+import { Route as SiteDemoDemoRouteImport } from './routes/site.demo.$demo'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -33,6 +43,11 @@ const ClientsRoute = ClientsRouteImport.update({
 const FinanceRoute = FinanceRouteImport.update({
   id: '/finance',
   path: '/finance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InquiriesRoute = InquiriesRouteImport.update({
+  id: '/inquiries',
+  path: '/inquiries',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InvoicesRoute = InvoicesRouteImport.update({
@@ -50,6 +65,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SiteRoute = SiteRouteImport.update({
+  id: '/site',
+  path: '/site',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TeamRoute = TeamRouteImport.update({
   id: '/team',
   path: '/team',
@@ -65,48 +85,117 @@ const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
   path: '/projects/$projectId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SiteIndexRoute = SiteIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteAboutRoute = SiteAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteContactRoute = SiteContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteOurTeamRoute = SiteOurTeamRouteImport.update({
+  id: '/our-team',
+  path: '/our-team',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SitePortfolioRoute = SitePortfolioRouteImport.update({
+  id: '/portfolio',
+  path: '/portfolio',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteServicesRoute = SiteServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteWhySainoxRoute = SiteWhySainoxRouteImport.update({
+  id: '/why-sainox',
+  path: '/why-sainox',
+  getParentRoute: () => SiteRoute,
+} as any)
 const SoonModuleRoute = SoonModuleRouteImport.update({
   id: '/soon/$module',
   path: '/soon/$module',
   getParentRoute: () => rootRouteImport,
+} as any)
+const SiteDemoDemoRoute = SiteDemoDemoRouteImport.update({
+  id: '/demo/$demo',
+  path: '/demo/$demo',
+  getParentRoute: () => SiteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/clients': typeof ClientsRoute
   '/finance': typeof FinanceRoute
+  '/inquiries': typeof InquiriesRoute
   '/invoices': typeof InvoicesRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/site': typeof SiteRouteWithChildren
   '/team': typeof TeamRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/site/about': typeof SiteAboutRoute
+  '/site/contact': typeof SiteContactRoute
+  '/site/our-team': typeof SiteOurTeamRoute
+  '/site/portfolio': typeof SitePortfolioRoute
+  '/site/services': typeof SiteServicesRoute
+  '/site/why-sainox': typeof SiteWhySainoxRoute
   '/soon/$module': typeof SoonModuleRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/site/': typeof SiteIndexRoute
+  '/site/demo/$demo': typeof SiteDemoDemoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/clients': typeof ClientsRoute
   '/finance': typeof FinanceRoute
+  '/inquiries': typeof InquiriesRoute
   '/invoices': typeof InvoicesRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
   '/team': typeof TeamRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/site/about': typeof SiteAboutRoute
+  '/site/contact': typeof SiteContactRoute
+  '/site/our-team': typeof SiteOurTeamRoute
+  '/site/portfolio': typeof SitePortfolioRoute
+  '/site/services': typeof SiteServicesRoute
+  '/site/why-sainox': typeof SiteWhySainoxRoute
   '/soon/$module': typeof SoonModuleRoute
   '/projects': typeof ProjectsIndexRoute
+  '/site': typeof SiteIndexRoute
+  '/site/demo/$demo': typeof SiteDemoDemoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/clients': typeof ClientsRoute
   '/finance': typeof FinanceRoute
+  '/inquiries': typeof InquiriesRoute
   '/invoices': typeof InvoicesRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/site': typeof SiteRouteWithChildren
   '/team': typeof TeamRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/site/about': typeof SiteAboutRoute
+  '/site/contact': typeof SiteContactRoute
+  '/site/our-team': typeof SiteOurTeamRoute
+  '/site/portfolio': typeof SitePortfolioRoute
+  '/site/services': typeof SiteServicesRoute
+  '/site/why-sainox': typeof SiteWhySainoxRoute
   '/soon/$module': typeof SoonModuleRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/site/': typeof SiteIndexRoute
+  '/site/demo/$demo': typeof SiteDemoDemoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -114,46 +203,77 @@ export interface FileRouteTypes {
     | '/'
     | '/clients'
     | '/finance'
+    | '/inquiries'
     | '/invoices'
     | '/reset-password'
     | '/settings'
+    | '/site'
     | '/team'
     | '/projects/$projectId'
+    | '/site/about'
+    | '/site/contact'
+    | '/site/our-team'
+    | '/site/portfolio'
+    | '/site/services'
+    | '/site/why-sainox'
     | '/soon/$module'
     | '/projects/'
+    | '/site/'
+    | '/site/demo/$demo'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/clients'
     | '/finance'
+    | '/inquiries'
     | '/invoices'
     | '/reset-password'
     | '/settings'
     | '/team'
     | '/projects/$projectId'
+    | '/site/about'
+    | '/site/contact'
+    | '/site/our-team'
+    | '/site/portfolio'
+    | '/site/services'
+    | '/site/why-sainox'
     | '/soon/$module'
     | '/projects'
+    | '/site'
+    | '/site/demo/$demo'
   id:
     | '__root__'
     | '/'
     | '/clients'
     | '/finance'
+    | '/inquiries'
     | '/invoices'
     | '/reset-password'
     | '/settings'
+    | '/site'
     | '/team'
     | '/projects/$projectId'
+    | '/site/about'
+    | '/site/contact'
+    | '/site/our-team'
+    | '/site/portfolio'
+    | '/site/services'
+    | '/site/why-sainox'
     | '/soon/$module'
     | '/projects/'
+    | '/site/'
+    | '/site/demo/$demo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ClientsRoute: typeof ClientsRoute
   FinanceRoute: typeof FinanceRoute
+  InquiriesRoute: typeof InquiriesRoute
   InvoicesRoute: typeof InvoicesRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SettingsRoute: typeof SettingsRoute
+  SiteRoute: typeof SiteRouteWithChildren
   TeamRoute: typeof TeamRoute
   ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
   SoonModuleRoute: typeof SoonModuleRoute
@@ -183,6 +303,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FinanceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/inquiries': {
+      id: '/inquiries'
+      path: '/inquiries'
+      fullPath: '/inquiries'
+      preLoaderRoute: typeof InquiriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/invoices': {
       id: '/invoices'
       path: '/invoices'
@@ -202,6 +329,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/site': {
+      id: '/site'
+      path: '/site'
+      fullPath: '/site'
+      preLoaderRoute: typeof SiteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/team': {
@@ -225,6 +359,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsProjectIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/site/': {
+      id: '/site/'
+      path: '/'
+      fullPath: '/site/'
+      preLoaderRoute: typeof SiteIndexRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/site/about': {
+      id: '/site/about'
+      path: '/about'
+      fullPath: '/site/about'
+      preLoaderRoute: typeof SiteAboutRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/site/contact': {
+      id: '/site/contact'
+      path: '/contact'
+      fullPath: '/site/contact'
+      preLoaderRoute: typeof SiteContactRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/site/our-team': {
+      id: '/site/our-team'
+      path: '/our-team'
+      fullPath: '/site/our-team'
+      preLoaderRoute: typeof SiteOurTeamRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/site/portfolio': {
+      id: '/site/portfolio'
+      path: '/portfolio'
+      fullPath: '/site/portfolio'
+      preLoaderRoute: typeof SitePortfolioRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/site/services': {
+      id: '/site/services'
+      path: '/services'
+      fullPath: '/site/services'
+      preLoaderRoute: typeof SiteServicesRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/site/why-sainox': {
+      id: '/site/why-sainox'
+      path: '/why-sainox'
+      fullPath: '/site/why-sainox'
+      preLoaderRoute: typeof SiteWhySainoxRouteImport
+      parentRoute: typeof SiteRoute
+    }
     '/soon/$module': {
       id: '/soon/$module'
       path: '/soon/$module'
@@ -232,16 +415,49 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SoonModuleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/site/demo/$demo': {
+      id: '/site/demo/$demo'
+      path: '/demo/$demo'
+      fullPath: '/site/demo/$demo'
+      preLoaderRoute: typeof SiteDemoDemoRouteImport
+      parentRoute: typeof SiteRoute
+    }
   }
 }
+
+interface SiteRouteChildren {
+  SiteAboutRoute: typeof SiteAboutRoute
+  SiteContactRoute: typeof SiteContactRoute
+  SiteOurTeamRoute: typeof SiteOurTeamRoute
+  SitePortfolioRoute: typeof SitePortfolioRoute
+  SiteServicesRoute: typeof SiteServicesRoute
+  SiteWhySainoxRoute: typeof SiteWhySainoxRoute
+  SiteIndexRoute: typeof SiteIndexRoute
+  SiteDemoDemoRoute: typeof SiteDemoDemoRoute
+}
+
+const SiteRouteChildren: SiteRouteChildren = {
+  SiteAboutRoute: SiteAboutRoute,
+  SiteContactRoute: SiteContactRoute,
+  SiteOurTeamRoute: SiteOurTeamRoute,
+  SitePortfolioRoute: SitePortfolioRoute,
+  SiteServicesRoute: SiteServicesRoute,
+  SiteWhySainoxRoute: SiteWhySainoxRoute,
+  SiteIndexRoute: SiteIndexRoute,
+  SiteDemoDemoRoute: SiteDemoDemoRoute,
+}
+
+const SiteRouteWithChildren = SiteRoute._addFileChildren(SiteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ClientsRoute: ClientsRoute,
   FinanceRoute: FinanceRoute,
+  InquiriesRoute: InquiriesRoute,
   InvoicesRoute: InvoicesRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SettingsRoute: SettingsRoute,
+  SiteRoute: SiteRouteWithChildren,
   TeamRoute: TeamRoute,
   ProjectsProjectIdRoute: ProjectsProjectIdRoute,
   SoonModuleRoute: SoonModuleRoute,
