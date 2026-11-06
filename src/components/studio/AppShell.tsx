@@ -39,7 +39,7 @@ const NAV: Group[] = [
     { label: "Research Projects", to: soon("research") }, { label: "Learning Roadmap", to: soon("roadmap") },
   ]},
   { label: "Client Management", icon: Users, items: [
-    { label: "All Clients", to: "/clients" }, { label: "Leads", to: soon("leads") }, { label: "Meetings", to: soon("meetings") },
+    { label: "All Clients", to: "/clients" }, { label: "Website Inquiries", to: "/inquiries" }, { label: "Public Website", to: "/site" }, { label: "Leads", to: soon("leads") }, { label: "Meetings", to: soon("meetings") },
   ]},
   { label: "Finance & Invoices", icon: Wallet, items: [
     { label: "Financial Overview", to: "/finance" }, { label: "Invoices", to: "/invoices" },
@@ -64,7 +64,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isPublic = pathname === "/team" || pathname === "/reset-password";
   useEffect(() => setMobileOpen(false), [path]);
   // Guest invitation pages are public cards, shown without the dashboard frame.
-  if (pathname.startsWith("/invite/")) return <>{children}</>;
+  if (pathname.startsWith("/invite/") || pathname === "/site" || pathname.startsWith("/site/")) return <>{children}</>;
 
   return (
     <QuickCreateContext.Provider value={setCreate}>
